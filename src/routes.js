@@ -1,5 +1,6 @@
 const { newBookController } = require('./controller/NewBookController');
 const { findNameBook, findReadingBook, findFinishedBook } = require('./controller/FindBookController');
+const notes = require('./notes');
 
 const routes = [
     {
@@ -16,7 +17,7 @@ const routes = [
     {
         method: 'GET',
         path: '/books',
-        handler: (request) => {
+        handler: (request, h) => {
             if (request.query.name) {
                 return findNameBook(request.query.name);
             }
@@ -27,7 +28,17 @@ const routes = [
                 return findFinishedBook(request.query.finished);
             }
 
-            return 'You just accessed all books';
+            return h.response({
+                status: 'success',
+                data: {
+                    books:
+                        notes.map((note) => ({
+                            id: note.id,
+                            name: note.name,
+                            publisher: note.publisher,
+                        })),
+                },
+            });
         },
     },
     {
@@ -40,8 +51,8 @@ const routes = [
         path: '/books',
         handler: (request, h) => {
             const myBook = request.payload;
-            newBookController(myBook);
-            return h.response('Book added').code(201);
+            const returnData = newBookController(myBook);
+            return h.response(returnData.response).code(returnData.code);
         },
     },
 

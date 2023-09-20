@@ -1,4 +1,5 @@
 const { nanoid } = require('nanoid');
+const notes = require('../notes');
 
 const newBookController = (data) => {
     const statusFinish = (data.readPage === data.pageCount);
@@ -17,7 +18,52 @@ const newBookController = (data) => {
         updateDate: new Date().toISOString(),
     };
 
-    console.log('Book added: ', book);
+    if (data.name === '') {
+        const code = 400;
+        return {
+            response: {
+                status: 'fail',
+                message: 'Gagal menambahkan buku. Mohon isi nama buku',
+            },
+            code,
+        };
+    }
+
+    if (data.readPage > data.pageCount) {
+        const code = 400;
+        return {
+            response: {
+                status: 'fail',
+                message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
+            },
+            code,
+        };
+    }
+
+    notes.push(book);
+
+    const isSuccess = notes.filter((note) => note.id === book.id).length > 0;
+    if (isSuccess) {
+        const code = 201;
+        return {
+            response: {
+                status: 'success',
+                message: 'Buku berhasil ditambahkan',
+                data: {
+                    bookId: book.id,
+                },
+            },
+            code,
+        };
+    }
+    const code = 400;
+    return {
+        response: {
+            status: 'fail',
+            message: 'Buku gagal ditambahkan',
+        },
+        code,
+    };
 };
 
 module.exports = {
