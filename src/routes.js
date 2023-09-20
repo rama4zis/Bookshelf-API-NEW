@@ -3,6 +3,7 @@ const {
  findNameBook, findReadingBook, findFinishedBook, findIdBook,
 } = require('./controller/FindBookController');
 const { editBookController } = require('./controller/EditBookController');
+const { deleteBookController } = require('./controller/DeleteBookController');
 const notes = require('./notes');
 
 const routes = [
@@ -66,6 +67,14 @@ const routes = [
         handler: (request, h) => {
             const myBook = request.payload;
             const returnData = newBookController(myBook);
+            return h.response(returnData.response).code(returnData.code);
+        },
+    },
+    {
+        method: 'DELETE',
+        path: '/books/{bookId}',
+        handler: (request, h) => {
+            const returnData = deleteBookController(request.params.bookId);
             return h.response(returnData.response).code(returnData.code);
         },
     },
