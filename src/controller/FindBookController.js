@@ -1,10 +1,79 @@
 const notes = require('../notes');
 
-const findNameBook = (name) => name;
+const findNameBook = (search) => {
+    const bookName = search.toLowerCase();
+    const books = notes.filter((note) => note.name.toLowerCase() === bookName);
+    if (books.length === 0) {
+        return {
+            response: {
+                status: 'fail',
+                message: 'Buku tidak ditemukan',
+            },
+            code: 400,
+        };
+    }
 
-const findReadingBook = (reading) => reading;
+    return {
+        response: {
+            status: 'success',
+            data: {
+                book: books.map((note) => ({
+                    id: note.id,
+                    name: note.name,
+                    publisher: note.publisher,
+                })),
+            },
+        },
+        code: 200,
+    };
+};
 
-const findFinishedBook = (finished) => finished;
+const findReadingBook = (search) => {
+    const status = (search === '1');
+    const books = notes.filter((note) => note.reading === status);
+
+    return {
+        response: {
+            status: 'success',
+            data: {
+                books: books.map((note) => ({
+                    id: note.id,
+                    name: note.name,
+                    publisher: note.publisher,
+                })),
+            },
+        },
+        code: 200,
+    };
+};
+
+const findFinishedBook = (search) => {
+    const status = (search === '1');
+    const books = notes.filter((note) => note.finished === status);
+    if (books.length === 0) {
+        return {
+            response: {
+                status: 'fail',
+                message: 'Tidak ada buku yang sudah dibaca',
+            },
+            code: 400,
+        };
+    }
+
+    return {
+        response: {
+            status: 'success',
+            data: {
+                books: books.map((note) => ({
+                    id: note.id,
+                    name: note.name,
+                    publisher: note.publisher,
+                })),
+            },
+        },
+        code: 200,
+    };
+};
 
 const findIdBook = (id) => {
     if (!notes.find((note) => note.id === id)) {
@@ -30,5 +99,5 @@ const findIdBook = (id) => {
 };
 
 module.exports = {
- findNameBook, findReadingBook, findFinishedBook, findIdBook,
+    findNameBook, findReadingBook, findFinishedBook, findIdBook,
 };

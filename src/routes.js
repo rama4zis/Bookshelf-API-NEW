@@ -23,13 +23,16 @@ const routes = [
         path: '/books',
         handler: (request, h) => {
             if (request.query.name) {
-                return findNameBook(request.query.name);
+                const returnData = findNameBook(request.query.name);
+                return h.response(returnData.response).code(returnData.code);
             }
             if (request.query.reading) {
-                return findReadingBook(request.query.reading);
+                const returnData = findReadingBook(request.query.reading);
+                return h.response(returnData.response).code(returnData.code);
             }
             if (request.query.finished) {
-                return findFinishedBook(request.query.finished);
+                const returnData = findFinishedBook(request.query.finished);
+                return h.response(returnData.response).code(returnData.code);
             }
 
             return h.response({
