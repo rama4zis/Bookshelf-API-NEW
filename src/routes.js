@@ -1,3 +1,6 @@
+const { newBookController } = require('./controller/NewBookController');
+const { findNameBook, findReadingBook, findFinishedBook } = require('./controller/FindBookController');
+
 const routes = [
     {
         method: 'GET',
@@ -13,7 +16,19 @@ const routes = [
     {
         method: 'GET',
         path: '/books',
-        handler: () => 'This is a GET Request',
+        handler: (request) => {
+            if (request.query.name) {
+                return findNameBook(request.query.name);
+            }
+            if (request.query.reading) {
+                return findReadingBook(request.query.reading);
+            }
+            if (request.query.finished) {
+                return findFinishedBook(request.query.finished);
+            }
+
+            return 'You just accessed all books';
+        },
     },
     {
         method: 'GET',
@@ -23,9 +38,10 @@ const routes = [
     {
         method: 'POST',
         path: '/books',
-        handler: (request) => {
+        handler: (request, h) => {
             const myBook = request.payload;
-            return `This is test for POST :${JSON.stringify(myBook)}`;
+            newBookController(myBook);
+            return h.response('Book added').code(201);
         },
     },
 

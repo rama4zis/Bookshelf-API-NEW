@@ -10,6 +10,7 @@ const init = async () => {
     server.route(routes);
 
     await server.start();
+    console.log('Server running on %s with Hapi', server.info.uri);
 };
 
 init();
