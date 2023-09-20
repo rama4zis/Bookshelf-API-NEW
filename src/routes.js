@@ -1,5 +1,8 @@
 const { newBookController } = require('./controller/NewBookController');
-const { findNameBook, findReadingBook, findFinishedBook } = require('./controller/FindBookController');
+const {
+ findNameBook, findReadingBook, findFinishedBook, findIdBook,
+} = require('./controller/FindBookController');
+const { editBookController } = require('./controller/EditBookController');
 const notes = require('./notes');
 
 const routes = [
@@ -44,7 +47,18 @@ const routes = [
     {
         method: 'GET',
         path: '/books/{bookId}',
-        handler: (request) => `You just accessed book ${request.params.bookId}`,
+        handler: (request, h) => {
+            const returnData = findIdBook(request.params.bookId);
+            return h.response(returnData.response).code(returnData.code);
+        },
+    },
+    {
+        method: 'PUT',
+        path: '/books/{bookId}',
+        handler: (request, h) => {
+            const returnData = editBookController(request.params.bookId, request.payload);
+            return h.response(returnData.response).code(returnData.code);
+        },
     },
     {
         method: 'POST',
@@ -59,7 +73,7 @@ const routes = [
     {
         method: '*',
         path: '/{any*}',
-        handler: () => 'Page not found',
+        handler: (request, h) => h.response('404 Error! Page Not Found!').code(404),
     },
 ];
 
