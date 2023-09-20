@@ -2,7 +2,7 @@ const notes = require('../notes');
 
 const findNameBook = (search) => {
     const bookName = search.toLowerCase();
-    const books = notes.filter((note) => note.name.toLowerCase() === bookName);
+    const books = notes.filter((note) => note.name.toLowerCase().includes(bookName));
     if (books.length === 0) {
         return {
             response: {
@@ -17,7 +17,7 @@ const findNameBook = (search) => {
         response: {
             status: 'success',
             data: {
-                book: books.map((note) => ({
+                books: books.map((note) => ({
                     id: note.id,
                     name: note.name,
                     publisher: note.publisher,
