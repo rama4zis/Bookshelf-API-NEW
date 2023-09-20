@@ -14,11 +14,11 @@ const newBookController = (data) => {
         readPage: data.readPage,
         reading: data.reading,
         finished: statusFinish,
-        insertDate: new Date().toISOString(),
-        updateDate: new Date().toISOString(),
+        insertedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
     };
 
-    if (data.name === '') {
+    if (data.name === null || data.name === '' || data.name === undefined) {
         const code = 400;
         return {
             response: {

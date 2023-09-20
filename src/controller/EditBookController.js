@@ -14,9 +14,18 @@ const editBookController = (id, newData) => {
     }
 
     const currentBook = findIdBook(id);
+    if (!newData.name) {
+        return {
+            response: {
+                status: 'fail',
+                message: 'Gagal memperbarui buku. Mohon isi nama buku',
+            },
+            code: 400,
+        };
+    }
     const {
         // eslint-disable-next-line max-len
-        name = currentBook.name, year = currentBook.year, author = currentBook.author, summary = currentBook.summary, publisher = currentBook.publisher, pageCount = currentBook.pageCount, readPage = currentBook.readPage, reading = currentBook.reading,
+        name = currentBook.response.data.book.name, year = currentBook.response.data.book.year, author = currentBook.response.data.book.author, summary = currentBook.response.data.book.summary, publisher = currentBook.response.data.book.publisher, pageCount = currentBook.response.data.book.pageCount, readPage = currentBook.response.data.book.readPage, reading = currentBook.response.data.book.reading,
     } = newData;
     const updateAt = new Date().toISOString();
     const statusFinish = (readPage === pageCount);
@@ -31,20 +40,9 @@ const editBookController = (id, newData) => {
         readPage,
         reading,
         finished: statusFinish,
-        insertDate: currentBook.insertDate,
-        updateDate: updateAt,
+        insertedAt: currentBook.response.data.book.insertedAt,
+        updatedAt: updateAt,
     };
-
-    if (!name) {
-        const code = 400;
-        return {
-            response: {
-                status: 'fail',
-                message: 'Gagal memperbarui buku. Mohon isi nama buku',
-            },
-            code,
-        };
-    }
 
     if (readPage > pageCount) {
         const code = 400;
